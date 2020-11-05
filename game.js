@@ -3,6 +3,7 @@ var config = {
   width: 1900,
   height: 800,
   parent: 'phaser-example',
+
   scene: {
       preload: preload,
       create: create,
@@ -143,6 +144,7 @@ function update (time, delta)
 // }
 
 // function update() {
+
   //Player movement Basics for walking back and forth//
   /*This will need to be tinkered with for sure as we are just flying up */
   /*there is an error that I haven't solved yet*/
@@ -160,3 +162,4 @@ function update (time, delta)
   //   player.setVelocityY(-330);
   // }
 // }
+
