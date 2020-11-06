@@ -1,93 +1,116 @@
+// import GameWin from "./gameWin";
+
 var config = {
   type: Phaser.AUTO,
   width: 1900,
   height: 800,
-  parent: 'phaser-example',
+  parent: "phaser-example",
+  // audio: {
+  //   disableWebAudio: true, //This is the HTML 5 audio.. Web audio is the default audio context.
+  // },
 
   scene: {
-      preload: preload,
-      create: create,
-      update: update
-  }
+    preload: preload,
+    create: create,
+    update: update,
+  },
 };
 
+var player; //Added player
 var map;
 var text;
 var sx = 0;
 var mapWidth = 51;
 var mapHeight = 37;
 var distance = 0;
-var tiles = [ 7, 7, 7, 6, 6, 6, 0, 0, 0, 1, 1, 2, 3, 4, 5 ];
+var tiles = [7, 7, 7, 6, 6, 6, 0, 0, 0, 1, 1, 2, 3, 4, 5];
+
+// let gameWin = false
 
 var game = new Phaser.Game(config);
 
-function preload ()
-{
-  this.load.image('tiles', 'images/firstlevel.png');
-    
+function preload() {
+  this.load.image("tiles", "images/firstlevel.png");
+  this.load.image("ground", "./images/smallBlock.png");
+  // this.load.audio("introMusic", [
+  //   "./audio/collection/gamePlay/kim_lightyear_-_stardust_vision_ii.mp3",
+  // ]); // Firefox doesn't support mp3 files, so use ogg); This is the traditional audio setup
 }
 
-function create ()
-{
+function create() {
+  //Audio// THis is the traditional audio setup
+  // this.music = this.sound.add("music");
+
+  // var musicConfig = {
+  //   mute: false,
+  //   volume: 1,
+  //   rate: 1,
+  //   detune: 0,
+  //   seek: 0,
+  //   loop: false,
+  //   delay: 0,
+  // };
+  // this.music.play(musicConfig);
+  //End Audio//
+  
+
   var mapData = [];
 
-  for (var y = 0; y < mapHeight; y++)
-  {
-      var row = [];
+  for (var y = 0; y < mapHeight; y++) {
+    var row = [];
 
-      for (var x = 0; x < mapWidth; x++)
-      {
-          //  Scatter the tiles so we get more stars 
-          var tileIndex = Phaser.Math.RND.weightedPick(tiles);
+    for (var x = 0; x < mapWidth; x++) {
+      //  Scatter the tiles so we get more stars
+      var tileIndex = Phaser.Math.RND.weightedPick(tiles);
 
-          row.push(tileIndex);
-      }
+      row.push(tileIndex);
+    }
 
-      mapData.push(row);
+    mapData.push(row);
   }
 
   map = this.make.tilemap({ data: mapData, tileWidth: 950, tileHeight: 550 });
 
-  var tileset = map.addTilesetImage('tiles');
+  var tileset = map.addTilesetImage("tiles");
   var layer = map.createDynamicLayer(0, tileset, 0, 0);
 
+  // //Sound during game//
+  // var music = game.add.audio("introMusic");
+  // music.play({
+  //   loop: true,
+  // });
 }
 
-function update (time, delta)
-{
+function update(time, delta) {
   //  Any speed as long as 16 evenly divides by it
   sx += 4;
 
   distance += sx;
 
+  if (sx === 16) {
+    //  Reset and create new strip
 
-  if (sx === 16)
-  {
-      //  Reset and create new strip
+    var tile;
+    var prev;
 
-      var tile;
-      var prev;
+    for (var y = 0; y < mapHeight; y++) {
+      for (var x = 1; x < mapWidth; x++) {
+        tile = map.getTileAt(x, y);
+        prev = map.getTileAt(x - 1, y);
 
-      for (var y = 0; y < mapHeight; y++)
-      {
-          for (var x = 1; x < mapWidth; x++)
-          {
-              tile = map.getTileAt(x, y);
-              prev = map.getTileAt(x - 1, y);
+        prev.index = tile.index;
 
-              prev.index = tile.index;
-
-              if (x === mapWidth - 1)
-              {
-                  tile.index = Phaser.Math.RND.weightedPick(tiles);
-              }
-          }
+        if (x === mapWidth - 1) {
+          tile.index = Phaser.Math.RND.weightedPick(tiles);
+        }
       }
+    }
 
-      sx = 1;
+    sx = 1;
   }
 
   this.cameras.main.scrollY = sx;
+  // introMuse.play(config);
 }
 
 // var config = {
@@ -145,21 +168,20 @@ function update (time, delta)
 
 // function update() {
 
-  //Player movement Basics for walking back and forth//
-  /*This will need to be tinkered with for sure as we are just flying up */
-  /*there is an error that I haven't solved yet*/
-  // if (cursors.left.isDown) {
-  //   player.setVelocityX(-160);
-  //   player.anims.play("left", true);
-  // } else if (cursors.right.isDown) {
-  //   player.setVelocityX(160);
-  //   player.anims.play("right", true);
-  // } else {
-  //   player.setVelocityX(0);
-  //   player.anims.play("turn");
-  // }
-  // if (cursors.up.isDown && player.body.touching.down) {
-  //   player.setVelocityY(-330);
-  // }
+//Player movement Basics for walking back and forth//
+/*This will need to be tinkered with for sure as we are just flying up */
+/*there is an error that I haven't solved yet*/
+// if (cursors.left.isDown) {
+//   player.setVelocityX(-160);
+//   player.anims.play("left", true);
+// } else if (cursors.right.isDown) {
+//   player.setVelocityX(160);
+//   player.anims.play("right", true);
+// } else {
+//   player.setVelocityX(0);
+//   player.anims.play("turn");
 // }
-
+// if (cursors.up.isDown && player.body.touching.down) {
+//   player.setVelocityY(-330);
+// }
+// }
