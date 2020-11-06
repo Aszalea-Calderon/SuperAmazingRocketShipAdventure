@@ -1,33 +1,13 @@
 // import GameWin from "./gameWin";
 
-// //Sounds//
-// //LiftOff//
-// import liftOff1 from './audio/collection/liftoffs/321liftoff.mp3';
-// import englishLiftoff from "./audio/collection/liftoffs/properboiliftoff.mp3";
-
-// //Collection sounds//
-// import wetSplat from './audio/collection/wetsplat.mp3';
-// import bloop from './audio/collection/bloop.mp3';
-// import boop from './audio/collection/ling.mp3';
-// import ling from './audio/collection/ping.mp3';
-
-// //Explosions sounds//
-// import explode1 from './audio/explosions/explosion1.mp3';
-// import explode2 from './audio/explosions/explosion2.mp3';
-// import explodesentence from './audio/explosions/explosionnoise.mp3'
-// import sadExplosion from './audio/explosions/sadboom.mp3';
-
-// //Flyby sounds//
-// import bwew from './audio/flyby/bwweeew.mp3';
-// import fwhoosh from './audio/flyby/fwhoosh.mp3'
-// import peew from './audio/flyby/peew.mp3'
-// import whoosh from './audio/flyby/whoosh.mp3'
-
 var config = {
   type: Phaser.AUTO,
   width: 1900,
   height: 800,
   parent: "phaser-example",
+  // audio: {
+  //   disableWebAudio: true, //This is the HTML 5 audio.. Web audio is the default audio context.
+  // },
 
   scene: {
     preload: preload,
@@ -36,6 +16,7 @@ var config = {
   },
 };
 
+var player; //Added player
 var map;
 var text;
 var sx = 0;
@@ -44,13 +25,35 @@ var mapHeight = 37;
 var distance = 0;
 var tiles = [7, 7, 7, 6, 6, 6, 0, 0, 0, 1, 1, 2, 3, 4, 5];
 
+// let gameWin = false
+
 var game = new Phaser.Game(config);
 
 function preload() {
   this.load.image("tiles", "images/firstlevel.png");
+  this.load.image("ground", "./images/smallBlock.png");
+  // this.load.audio("introMusic", [
+  //   "./audio/collection/gamePlay/kim_lightyear_-_stardust_vision_ii.mp3",
+  // ]); // Firefox doesn't support mp3 files, so use ogg); This is the traditional audio setup
 }
 
 function create() {
+  //Audio// THis is the traditional audio setup
+  // this.music = this.sound.add("music");
+
+  // var musicConfig = {
+  //   mute: false,
+  //   volume: 1,
+  //   rate: 1,
+  //   detune: 0,
+  //   seek: 0,
+  //   loop: false,
+  //   delay: 0,
+  // };
+  // this.music.play(musicConfig);
+  //End Audio//
+  
+
   var mapData = [];
 
   for (var y = 0; y < mapHeight; y++) {
@@ -70,6 +73,12 @@ function create() {
 
   var tileset = map.addTilesetImage("tiles");
   var layer = map.createDynamicLayer(0, tileset, 0, 0);
+
+  // //Sound during game//
+  // var music = game.add.audio("introMusic");
+  // music.play({
+  //   loop: true,
+  // });
 }
 
 function update(time, delta) {
@@ -101,6 +110,7 @@ function update(time, delta) {
   }
 
   this.cameras.main.scrollY = sx;
+  // introMuse.play(config);
 }
 
 // var config = {
