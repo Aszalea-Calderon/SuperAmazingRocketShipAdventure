@@ -166,3 +166,10 @@ function update() {
 // }
 // this.cameras.main.scrollY = sx;
 // }
+
+//To do next,
+//-- Collect gas
+// -- make meter that can fill
+//--This makes score go up
+//-- Collide with trash
+//--
