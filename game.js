@@ -8,7 +8,7 @@ var config = {
   physics: {
     default: "arcade",
     arcade: {
-      gravity: { y: 0 },
+      gravity: { y: 20 }, //The gravity is set so the gas will fall
       debug: false,
     },
   },
@@ -23,6 +23,7 @@ var game = new Phaser.Game(config);
 
 var player; //Added player
 var cursors; //Movement
+var gas; // Added gas cans
 var map;
 var sx = 0;
 var mapWidth = 51;
@@ -34,6 +35,7 @@ var tiles = [7, 7, 7, 6, 6, 6, 0, 0, 0, 1, 1, 2, 3, 4, 5];
 
 function preload() {
   this.load.image("tiles", "./images/rocketlaunch.png");
+  this.load.image("gas", "./images/smallgem.png");
   this.load.spritesheet("dude", "./images/player.png", {
     frameWidth: 32,
     frameHeight: 48,
@@ -43,6 +45,7 @@ function preload() {
 function create() {
   //Map//
   this.add.image(400, 300, "tiles");
+
   platforms = this.physics.add.staticGroup();
 
   //Player//
@@ -50,6 +53,18 @@ function create() {
 
   player.setBounce(0.2);
   player.setCollideWorldBounds(true);
+
+  //Gas Cans//
+  //This makes copies
+  gas = this.physics.add.group({
+    key: "gas",
+    repeat: 10,
+    setXY: { x: 12, y: 0, stepX: 70 },
+  });
+
+  this.physics.add.collider(gas, player); // This adds a collider for us and the gas. (this could be modified to hit astroids)
+
+  //this.physics.add.overlap(player, gas, collectGas, null, this); // or this
 
   //Audio// THis is the traditional audio setup
 
@@ -124,25 +139,30 @@ function update() {
   if (cursors.up.isDown && player.body.touching.down) {
     player.setVelocityY(-330);
   }
-
-  //Any speed as long as 16 evenly divides by it
-  // sx += 4;
-  // distance += sx;
-  // if (sx === 16) {
-  //   //  Reset and create new strip
-  //   var tile;
-  //   var prev;
-  //   for (var y = 0; y < mapHeight; y++) {
-  //     for (var x = 1; x < mapWidth; x++) {
-  //       tile = map.getTileAt(x, y);
-  //       prev = map.getTileAt(x - 1, y);
-  //       prev.index = tile.index;
-  //       if (x === mapWidth - 1) {
-  //         tile.index = Phaser.Math.RND.weightedPick(tiles);
-  //       }
-  //     }
-  //   }
-  //   sx = 1;
-  // }
-  // this.cameras.main.scrollY = sx;
 }
+
+//Gas Cans Collection//
+// function collectGas(player, gas) {
+//gas.disableBody(true, true);
+
+//Any speed as long as 16 evenly divides by it
+// sx += 4;
+// distance += sx;
+// if (sx === 16) {
+//   //  Reset and create new strip
+//   var tile;
+//   var prev;
+//   for (var y = 0; y < mapHeight; y++) {
+//     for (var x = 1; x < mapWidth; x++) {
+//       tile = map.getTileAt(x, y);
+//       prev = map.getTileAt(x - 1, y);
+//       prev.index = tile.index;
+//       if (x === mapWidth - 1) {
+//         tile.index = Phaser.Math.RND.weightedPick(tiles);
+//       }
+//     }
+//   }
+//   sx = 1;
+// }
+// this.cameras.main.scrollY = sx;
+// }
