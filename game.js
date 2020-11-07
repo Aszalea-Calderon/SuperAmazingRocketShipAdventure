@@ -5,9 +5,6 @@ var config = {
   width: 1900,
   height: 800,
   parent: "phaser-example",
-  // audio: {
-  //   disableWebAudio: true, //This is the HTML 5 audio.. Web audio is the default audio context.
-  // },
 
   scene: {
     preload: preload,
@@ -32,26 +29,17 @@ var game = new Phaser.Game(config);
 function preload() {
   this.load.image("tiles", "images/firstlevel.png");
   this.load.image("ground", "./images/smallBlock.png");
-  // this.load.audio("introMusic", [
-  //   "./audio/collection/gamePlay/kim_lightyear_-_stardust_vision_ii.mp3",
-  // ]); // Firefox doesn't support mp3 files, so use ogg); This is the traditional audio setup
 }
 
 function create() {
   //Audio// THis is the traditional audio setup
-  // this.music = this.sound.add("music");
 
-  // var musicConfig = {
-  //   mute: false,
-  //   volume: 1,
-  //   rate: 1,
-  //   detune: 0,
-  //   seek: 0,
-  //   loop: false,
-  //   delay: 0,
-  // };
-  // this.music.play(musicConfig);
-  //End Audio//
+  window.addEventListener("keydown", event => {
+    const audio = document.querySelector("audio");
+    audio.volume = .02;
+    audio.loop = true
+    audio.play();
+    });
   
 
   var mapData = [];
@@ -74,11 +62,6 @@ function create() {
   var tileset = map.addTilesetImage("tiles");
   var layer = map.createDynamicLayer(0, tileset, 0, 0);
 
-  // //Sound during game//
-  // var music = game.add.audio("introMusic");
-  // music.play({
-  //   loop: true,
-  // });
 }
 
 function update(time, delta) {
