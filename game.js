@@ -3,12 +3,12 @@
 var config = {
   type: Phaser.AUTO,
   width: 1900,
-  height: 800,
+  height: 600,
   parent: "phaser-example",
   physics: {
     default: "arcade",
     arcade: {
-      gravity: { y: 300 },
+      gravity: { y: 0 },
       debug: false,
     },
   },
@@ -22,6 +22,7 @@ var config = {
 var game = new Phaser.Game(config);
 
 var player; //Added player
+var cursors; //Movement
 var map;
 var sx = 0;
 var mapWidth = 51;
@@ -45,7 +46,7 @@ function create() {
   platforms = this.physics.add.staticGroup();
 
   //Player//
-  player = this.physics.add.sprite(100, 450, "dude");
+  player = this.physics.add.sprite(700, 550, "dude");
 
   player.setBounce(0.2);
   player.setCollideWorldBounds(true);
@@ -59,6 +60,7 @@ function create() {
     audio.play();
   });
 
+  //Animation//
   this.anims.create({
     key: "left",
     frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
@@ -78,6 +80,9 @@ function create() {
     frameRate: 10,
     repeat: -1,
   });
+
+  //Movement//
+  cursors = this.input.keyboard.createCursorKeys();
 
   // var mapData = [];
 
@@ -102,6 +107,24 @@ function create() {
 }
 
 function update() {
+  if (cursors.left.isDown) {
+    player.setVelocityX(-160);
+
+    player.anims.play("left", true);
+  } else if (cursors.right.isDown) {
+    player.setVelocityX(160);
+
+    player.anims.play("right", true);
+  } else {
+    player.setVelocityX(0);
+
+    player.anims.play("turn");
+  }
+
+  if (cursors.up.isDown && player.body.touching.down) {
+    player.setVelocityY(-330);
+  }
+
   //Any speed as long as 16 evenly divides by it
   // sx += 4;
   // distance += sx;
