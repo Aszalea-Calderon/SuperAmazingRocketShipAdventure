@@ -61,7 +61,7 @@ function create() {
     setXY: { x: 12, y: 0, stepX: 70 },
   });
 
-  this.physics.add.collider(trash, player); // This adds a collider for us and the gas. (this could be modified to hit astroids)
+  // this.physics.add.collider(trash, player); // This adds a collider for us and the gas. (this could be modified to hit astroids)
   this.physics.add.collider(player, trash, hitTrash, null, this);
 
   //Audio//
@@ -183,3 +183,4 @@ function hitTrash(player, trash) {
 //--This makes score go up
 //-- Collide with trash
 //--
+//collision
