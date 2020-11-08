@@ -8,7 +8,7 @@ var config = {
   physics: {
     default: "arcade",
     arcade: {
-      gravity: { y: 20 }, //The gravity is set so the gas will fall
+      gravity: { y: 100 }, //The gravity is set so the gas will fall
       debug: false,
     },
   },
@@ -24,6 +24,8 @@ var game = new Phaser.Game(config);
 var player; //Added player
 var cursors; //Movement
 var trash; // Added trash cans
+var score; //Score
+var scoreText; //Score Text
 var map;
 var sx = 0;
 var mapWidth = 51;
@@ -33,8 +35,9 @@ var tiles = [7, 7, 7, 6, 6, 6, 0, 0, 0, 1, 1, 2, 3, 4, 5];
 var gameOver = false;
 
 function preload() {
-  this.load.image("tiles", "./images/rocketlaunch.png");
-  this.load.image("trash", "./images/smallgem.png");
+  this.load.image("tiles", "./images/rocketlaunch.png"); //Player/Rocketship
+  this.load.image("trash", "./images/smallgem.png"); //Trash
+  this.load.spritesheet("explosion", "./images/explosion.png,", 32, 48, 28); //Explosion
   this.load.spritesheet("dude", "./images/player.png", {
     frameWidth: 32,
     frameHeight: 48,
@@ -61,7 +64,7 @@ function create() {
     setXY: { x: 12, y: 0, stepX: 70 },
   });
 
-  // this.physics.add.collider(trash, player); // This adds a collider for us and the gas. (this could be modified to hit astroids)
+  // this.physics.add.collider(trash, player); // can be modified to collect gas
   this.physics.add.collider(player, trash, hitTrash, null, this);
 
   //Audio//
@@ -73,7 +76,14 @@ function create() {
     audio.play();
   });
 
+  //Score//
+  scoreText = this.add.text(16, 16, "score: 0", {
+    fontSize: "32px",
+    fill: "#000",
+  });
+
   //Animation//
+  //player//
   this.anims.create({
     key: "left",
     frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
@@ -94,6 +104,17 @@ function create() {
     repeat: -1,
   });
 
+  //Explosion animation//
+  this.anims.create({
+    key: "explode",
+    frames: this.anims.generateFrameNumbers("explosion"),
+    frameRate: 20,
+    repeat: 0,
+    hideOnComplete: true,
+  });
+
+  //this.dude.setInteractive();
+  //this.input.on("gameobjectdown", this.hitTrash, this);
   //Movement//
   cursors = this.input.keyboard.createCursorKeys();
 
@@ -147,13 +168,22 @@ function update() {
 //trash//
 function hitTrash(player, trash) {
   this.physics.pause();
+
+  // trash.setTexture("explosion");
+  // trash.play("explode");
+  //explosion = this.game.add.sprite(player.body.x, player.body.y, "explosion");
+  // explosion.anchor.setTo(0.5, 0.5);
+  //explosion.animation.play("explosion");
   player.setTint(0xff0000);
   gameOver = true;
 }
 
 //Gas Cans Collection//
-// function collectGas(player, gas) {
-// gas.disableBody(true, true);
+function collectGas(player, gas) {
+  //  Add and update the score
+  score += 10;
+  scoreText.setText("Score: " + score);
+}
 
 //Any speed as long as 16 evenly divides by it
 // sx += 4;
@@ -183,4 +213,4 @@ function hitTrash(player, trash) {
 //--This makes score go up
 //-- Collide with trash
 //--
-//collision
+//collision- explosion (struggling to get the animation to work)
