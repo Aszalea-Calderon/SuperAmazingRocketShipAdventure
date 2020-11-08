@@ -24,6 +24,7 @@ var game = new Phaser.Game(config);
 var player; //Added player
 var cursors; //Movement
 var trash; // Added trash cans
+var gas; // Gas cans
 var score; //Score
 var scoreText; //Score Text
 var map;
@@ -36,6 +37,7 @@ var gameOver = false;
 
 function preload() {
   this.load.image("tiles", "./images/rocketlaunch.png"); //Player/Rocketship
+  this.load.image("gas", "./images/gasStandIn.png");
   this.load.image("trash", "./images/smallgem.png"); //Trash
   this.load.spritesheet("explosion", "./images/explosion.png,", 32, 48, 28); //Explosion
   this.load.spritesheet("dude", "./images/player.png", {
@@ -48,13 +50,20 @@ function create() {
   //Map//
   this.add.image(400, 300, "tiles");
 
-  platforms = this.physics.add.staticGroup();
-
   //Player//
   player = this.physics.add.sprite(700, 550, "dude");
 
   player.setBounce(0.2);
   player.setCollideWorldBounds(true);
+  //Gas Cans//
+
+  gas = this.physics.add.group({
+    key: "gas",
+    repeat: 11,
+    setXY: { x: 30, y: 0, stepX: 70 },
+  });
+  this.physics.add.collider(gas, player);
+  // this.physics.add.overlap(player, gas, collectStar, null, this);
 
   //trash Cans//
   //This makes copies
@@ -180,6 +189,8 @@ function hitTrash(player, trash) {
 
 //Gas Cans Collection//
 function collectGas(player, gas) {
+  gas.destroy();
+  gas.disableBody(true, true);
   //  Add and update the score
   score += 10;
   scoreText.setText("Score: " + score);
