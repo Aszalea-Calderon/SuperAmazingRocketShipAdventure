@@ -17,6 +17,9 @@ var config = {
     create: create,
     update: update,
   },
+  //These two make the pixels a bit harsher so its more pixelArtesque
+  pixelArt: true,
+  roundPixels: true,
 };
 
 var game = new Phaser.Game(config);
