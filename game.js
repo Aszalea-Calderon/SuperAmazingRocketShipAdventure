@@ -23,19 +23,18 @@ var game = new Phaser.Game(config);
 
 var player; //Added player
 var cursors; //Movement
-var gas; // Added gas cans
+var trash; // Added trash cans
 var map;
 var sx = 0;
 var mapWidth = 51;
 var mapHeight = 37;
 var distance = 0;
 var tiles = [7, 7, 7, 6, 6, 6, 0, 0, 0, 1, 1, 2, 3, 4, 5];
-
-// let gameWin = false
+var gameOver = false;
 
 function preload() {
   this.load.image("tiles", "./images/rocketlaunch.png");
-  this.load.image("gas", "./images/smallgem.png");
+  this.load.image("trash", "./images/smallgem.png");
   this.load.spritesheet("dude", "./images/player.png", {
     frameWidth: 32,
     frameHeight: 48,
@@ -54,19 +53,18 @@ function create() {
   player.setBounce(0.2);
   player.setCollideWorldBounds(true);
 
-  //Gas Cans//
+  //trash Cans//
   //This makes copies
-  gas = this.physics.add.group({
-    key: "gas",
+  trash = this.physics.add.group({
+    key: "trash",
     repeat: 10,
     setXY: { x: 12, y: 0, stepX: 70 },
   });
 
-  this.physics.add.collider(gas, player); // This adds a collider for us and the gas. (this could be modified to hit astroids)
+  this.physics.add.collider(trash, player); // This adds a collider for us and the gas. (this could be modified to hit astroids)
+  this.physics.add.collider(player, trash, hitTrash, null, this);
 
-  //this.physics.add.overlap(player, gas, collectGas, null, this); // or this
-
-  //Audio// THis is the traditional audio setup
+  //Audio//
 
   window.addEventListener("keydown", (event) => {
     const audio = document.querySelector("audio");
@@ -122,6 +120,11 @@ function create() {
 }
 
 function update() {
+  if (gameOver) {
+    //This is placed here so nothing else will run until game is started over
+    return;
+  }
+
   if (cursors.left.isDown) {
     player.setVelocityX(-160);
 
@@ -141,9 +144,16 @@ function update() {
   }
 }
 
+//trash//
+function hitTrash(player, trash) {
+  this.physics.pause();
+  player.setTint(0xff0000);
+  gameOver = true;
+}
+
 //Gas Cans Collection//
 // function collectGas(player, gas) {
-//gas.disableBody(true, true);
+// gas.disableBody(true, true);
 
 //Any speed as long as 16 evenly divides by it
 // sx += 4;
